@@ -4,82 +4,113 @@ import javafx.beans.property.*;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by joakimlindvall on 2017-10-28.
- */
 @Entity
 @Table(name = "orders")
 public class Order {
 
-    public Order(){
+    public Order() {
 
     }
 
-    public Order(int id){
+    public Order(int id) {
         setOrderId(id);
     }
 
     private final IntegerProperty orderId = new SimpleIntegerProperty();
 
-    public IntegerProperty orderIdProperty(){
+    public IntegerProperty orderIdProperty() {
         return orderId;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", updatable = false, nullable = false)
-    public int getOrderId(){
+    public int getOrderId() {
         return orderId.get();
     }
 
-    public void setOrderId(int value){
+    public void setOrderId(int value) {
         orderId.set(value);
     }
 
     private final StringProperty orderDate = new SimpleStringProperty();
 
-    public StringProperty orderDateProperty(){
+    public StringProperty orderDateProperty() {
         return orderDate;
     }
 
     @Basic
     @Column(name = "order_date")
-    public String getOrderDate(){
+    public String getOrderDate() {
         return orderDate.get();
     }
 
-    public void setOrderDate(String value){
+    public void setOrderDate(String value) {
         orderDate.set(value);
     }
 
-    private List<Item> items = new ArrayList<>();
+    private final IntegerProperty totalCost = new SimpleIntegerProperty();
 
-    @OneToMany(targetEntity=Item.class, cascade = CascadeType.ALL, mappedBy = "order")
-    public List<Item> getItems(){
-        return items;
+    public IntegerProperty totalCostProperty() {
+        return totalCost;
     }
 
-    public void setItems(List<Item> items){
-        this.items.addAll(items);
+    @Basic
+    @Column(name = "total_cost")
+    public int getTotalCost() {
+        return totalCost.get();
     }
 
-    private final ObjectProperty<Vendor> vendor = new SimpleObjectProperty<>();
+    public void setTotalCost(int value) {
+        totalCost.set(value);
+    }
 
-    public ObjectProperty<Vendor> vendorProperty(){
-        return vendor;
+    private final IntegerProperty quantity = new SimpleIntegerProperty();
+
+    public IntegerProperty quantityProperty() {
+        return quantity;
+    }
+
+    @Basic
+    @Column(name = "qty")
+    public int getQuantity() {
+        return quantity.get();
+    }
+
+    public void setQuantity(int value) {
+        quantity.set(value);
+    }
+
+    private final ObjectProperty<Item> item = new SimpleObjectProperty<>();
+
+    public ObjectProperty<Item> itemProperty() {
+        return item;
     }
 
     @ManyToOne
-    @JoinColumn(name = "vendor_id", nullable = false)
-    public Vendor getVendor(){
-        return vendor.get();
+    @JoinColumn(name = "item_id", nullable = false)
+    public Item getItem() {
+        return item.get();
     }
 
-    public void setVendor(Vendor vendor){
-        this.vendor.set(vendor);
+    public void setItem(Item item) {
+        this.item.set(item);
     }
+
+    private final ObjectProperty<Stock> stock = new SimpleObjectProperty<>();
+
+    public ObjectProperty<Stock> stockProperty() {
+        return stock;
+    }
+
+    @OneToOne(targetEntity = Stock.class, cascade = CascadeType.ALL, mappedBy = "order")
+    public Stock getStock() {
+        return stock.get();
+    }
+
+    public void setStock(Stock stock) {
+        this.stock.set(stock);
+    }
+
 
 }

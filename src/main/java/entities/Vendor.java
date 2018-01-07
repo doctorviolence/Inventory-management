@@ -6,9 +6,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by joakimlindvall on 2017-10-28.
- */
 @Entity
 @Table(name = "vendors")
 public class Vendor {
@@ -126,15 +123,15 @@ public class Vendor {
         email.set(value);
     }
 
-    private List<Order> orders = new ArrayList<>();
+    private List<Catalog> catalogs = new ArrayList<>();
 
-    @OneToMany(targetEntity=Order.class, cascade = CascadeType.ALL, mappedBy = "vendor")
-    public List<Order> getOrders(){
-        return orders;
+    @OneToMany(targetEntity=Catalog.class, cascade = CascadeType.ALL, mappedBy = "vendor")
+    public List<Catalog> getCatalogs(){
+        return catalogs;
     }
 
-    public void setOrders(List<Order> orders){
-        this.orders.addAll(orders);
+    public void setCatalogs(List<Catalog> catalogs){
+        this.catalogs.addAll(catalogs);
     }
 
 }

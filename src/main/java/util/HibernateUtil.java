@@ -1,15 +1,11 @@
 package main.java.util;
 
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
-/**
- * Created by joakimlindvall on 2017-11-05.
- */
 public class HibernateUtil {
 
     private static final SessionFactory sessionFactory = buildSessionFactory();

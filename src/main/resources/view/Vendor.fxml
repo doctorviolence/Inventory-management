@@ -3,96 +3,181 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0" prefWidth="1100.0" stylesheets="@../css/master.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controllers.VendorController">
-   <left>
-      <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="200.0" spacing="20.0" style="-fx-background-color: #303030;" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                     <viewport>
-                        <Rectangle2D minX="200.0" minY="200.0" />
-                     </viewport>
-                     <image>
-                        <Image url="@Sloth_cartoon.png" />
-                     </image>
-                  </ImageView>
-                  <HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Label styleClass="label-header" text="Sloth Systems Inc." />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-            <Button fx:id="inventoryButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#loadInventoryView" prefHeight="27.0" prefWidth="200.0" text="Inventory" />
-            <Button fx:id="vendorButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="200.0" styleClass="button-yellow" text="Vendor" />
-            <Button fx:id="reportButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#loadReportView" prefHeight="27.0" prefWidth="200.0" text="Report" />
-            <Button fx:id="exitBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="200.0" text="Exit Application" />
-         </children>
-      </VBox>
-   </left>
-   <right>
-      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" spacing="5.0">
-               <children>
-                  <HBox alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="700.0">
-                     <children>
-                        <Button fx:id="refreshBtn" mnemonicParsing="false" styleClass="button-red" text="Refresh Table" />
-                     </children>
-                  </HBox>
-                  <TableView fx:id="vendorTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="700.0">
-                    <columns>
-                      <TableColumn fx:id="vendorIdCol" prefWidth="50.0" text="ID" />
-                      <TableColumn fx:id="vendorNameCol" prefWidth="150.0" text="Vendor Name" />
-                        <TableColumn fx:id="addressCol" prefWidth="150.0" text="Address" />
-                        <TableColumn fx:id="phoneCol" prefWidth="100.0" text="Phone" />
-                        <TableColumn fx:id="emailCol" prefWidth="125.0" text="E-mail" />
-                        <TableColumn fx:id="websiteCol" prefWidth="125.0" text="Website" />
-                    </columns>
-                  </TableView>
-               </children>
-            </VBox>
-            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="900.0" spacing="2.0">
-               <children>
-                  <TextField fx:id="vendorNameInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="Vendor Name" />
-                  <TextField fx:id="addressInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="Address" />
-                  <TextField fx:id="phoneInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="80.0" promptText="Phone" />
-                  <TextField fx:id="emailInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="E-mail" />
-                  <TextField fx:id="websiteInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="Website" />
-                  <Button fx:id="addVendorBtn" mnemonicParsing="false" text="+" />
-                  <Button fx:id="removeVendorBtn" mnemonicParsing="false" text="-" />
-                  <Button fx:id="editVendorBtn" mnemonicParsing="false" text="Edit" />
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-         </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="10.0" top="10.0" />
-         </padding>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </VBox>
-   </right>
-   <bottom>
-      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1100.0" style="-fx-background-color: #E0E0E0;" BorderPane.alignment="CENTER">
-         <children>
-            <Text fx:id="messageText" strokeType="OUTSIDE" strokeWidth="0.0" text="Message dialog" />
-         </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </HBox>
-   </bottom>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0"
+            prefWidth="1100.0" stylesheets="@../css/master.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controllers.VendorController">
+    <left>
+        <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+              minWidth="-Infinity" prefHeight="700.0" prefWidth="150.0" spacing="20.0" styleClass="VBox-style"
+              BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                            <viewport>
+                                <Rectangle2D minX="200.0" minY="200.0"/>
+                            </viewport>
+                            <image>
+                                <Image url="@Sloth_cartoon.png"/>
+                            </image>
+                        </ImageView>
+                        <HBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <Label styleClass="label-header" text="Sloth Systems Inc."/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+                <Button fx:id="inventoryButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                        minWidth="-Infinity" mnemonicParsing="false" onAction="#loadInventoryView" prefHeight="27.0"
+                        prefWidth="150.0" styleClass="button-menu" text="Inventory"/>
+                <Button fx:id="vendorButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                        minWidth="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="150.0"
+                        styleClass="button-yellow" text="Vendor"/>
+                <Button fx:id="reportButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                        minWidth="-Infinity" mnemonicParsing="false" onAction="#loadReportView" prefHeight="27.0"
+                        prefWidth="150.0" styleClass="button-menu" text="Report"/>
+                <Button fx:id="exitBtn" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#loadCloseView" prefHeight="30.0" prefWidth="150.0" styleClass="button-menu"
+                        text=" Exit Application" textAlignment="CENTER"/>
+            </children>
+        </VBox>
+    </left>
+    <right>
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+              prefHeight="700.0" prefWidth="950.0" spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label styleClass="label-title" text="Vendors"/>
+                <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" prefHeight="300.0" prefWidth="950.0" spacing="5.0">
+                    <children>
+                        <TableView fx:id="vendorTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="300.0" prefWidth="800.0">
+                            <columns>
+                                <TableColumn fx:id="vendorIdCol" prefWidth="50.0" text="ID"/>
+                                <TableColumn fx:id="vendorNameCol" prefWidth="150.0" text="Vendor Name"/>
+                                <TableColumn fx:id="addressCol" prefWidth="200.0" text="Address"/>
+                                <TableColumn fx:id="phoneCol" prefWidth="100.0" text="Phone"/>
+                                <TableColumn fx:id="emailCol" prefWidth="150.0" text="E-mail"/>
+                                <TableColumn fx:id="websiteCol" prefWidth="150.0" text="Website"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" prefHeight="30.0" prefWidth="935.0" spacing="2.0">
+                    <children>
+                        <TextField fx:id="vendorNameInput" maxHeight="-Infinity" maxWidth="-Infinity"
+                                   minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0"
+                                   promptText="Vendor Name"/>
+                        <TextField fx:id="addressInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="Address"/>
+                        <TextField fx:id="phoneInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="27.0" prefWidth="80.0" promptText="Phone"/>
+                        <TextField fx:id="emailInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="E-mail"/>
+                        <TextField fx:id="websiteInput" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="27.0" prefWidth="100.0" promptText="Website"/>
+                        <Button fx:id="addVendorBtn" mnemonicParsing="false" text="+"/>
+                        <Button fx:id="removeVendorBtn" mnemonicParsing="false" text="-"/>
+                        <Button fx:id="editVendorBtn" mnemonicParsing="false" text="Edit"/>
+                        <Button fx:id="findCatalogsBtn" mnemonicParsing="false" styleClass="button-red"
+                                text="Find Catalogs"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" prefHeight="27.0" prefWidth="935.0">
+                    <children>
+                        <Label styleClass="label-title" text="Item Catalog"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                      minWidth="-Infinity" prefHeight="300.0" prefWidth="900.0" spacing="10.0">
+                    <children>
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="200.0" prefWidth="175.0" spacing="5.0">
+                            <children>
+                                <TableView fx:id="catalogTable" maxHeight="-Infinity" maxWidth="-Infinity"
+                                           minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+                                           prefWidth="175.0">
+                                    <columns>
+                                        <TableColumn fx:id="catalogIdCol" prefWidth="175.0" text="Catalog ID"/>
+                                    </columns>
+                                </TableView>
+                                <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                      minWidth="-Infinity" prefHeight="27.0" prefWidth="300.0" spacing="5.0">
+                                    <children>
+                                        <Button fx:id="addCatalogBtn" maxHeight="-Infinity" maxWidth="-Infinity"
+                                                minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                                prefHeight="29.0" prefWidth="29.0" text="+"/>
+                                        <Button fx:id="removeCatalogBtn" maxHeight="-Infinity" maxWidth="-Infinity"
+                                                minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                                prefHeight="29.0" prefWidth="27.0" text="-"/>
+                                        <Button fx:id="browseCatalogBtn" mnemonicParsing="false" styleClass="button-red"
+                                                text="Browse"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                              minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" spacing="5.0">
+                            <children>
+                                <TableView fx:id="itemTable" maxHeight="-Infinity" maxWidth="-Infinity"
+                                           minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+                                           prefWidth="400.0">
+                                    <columns>
+                                        <TableColumn fx:id="itemIdCol" prefWidth="125.0" text="Item ID"/>
+                                        <TableColumn fx:id="itemNameCol" prefWidth="175.0" text="Item Name"/>
+                                        <TableColumn fx:id="costCol" prefWidth="100.0" text="Cost"/>
+                                    </columns>
+                                </TableView>
+                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+                                      minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="515.0"
+                                      spacing="2.0">
+                                    <children>
+                                        <TextField fx:id="itemNameInput" alignment="CENTER" maxHeight="-Infinity"
+                                                   maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                                   prefHeight="27.0" prefWidth="150.0" promptText="Item Name"/>
+                                        <TextField fx:id="costInput" alignment="CENTER" maxHeight="-Infinity"
+                                                   maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                                                   prefHeight="27.0" prefWidth="100.0" promptText="Cost"/>
+                                        <Button fx:id="addItemBtn" maxHeight="-Infinity" maxWidth="-Infinity"
+                                                minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                                prefHeight="29.0" prefWidth="29.0" text="+"/>
+                                        <Button fx:id="removeItemBtn" maxHeight="-Infinity" maxWidth="-Infinity"
+                                                minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                                                prefHeight="29.0" prefWidth="27.0" text="-"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </right>
+    <bottom>
+        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+              prefHeight="30.0" prefWidth="1100.0" style="-fx-background-color: #E0E0E0;" styleClass="HBox-style"
+              BorderPane.alignment="CENTER">
+            <children>
+                <Text fx:id="messageText" strokeType="OUTSIDE" strokeWidth="0.0" text="Message dialog"/>
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+        </HBox>
+    </bottom>
 </BorderPane>

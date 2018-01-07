@@ -1,39 +1,27 @@
 package main.java.controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import main.java.dao.GenericDao;
-import main.java.entities.Item;
-import main.java.entities.Order;
-import main.java.entities.Vendor;
+import javafx.stage.StageStyle;
+import main.java.dao.*;
+import main.java.entities.*;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static java.lang.Integer.parseInt;
-
-/**
- * Created by joakimlindvall on 2017-11-10.
- */
 public class InventoryController implements Initializable {
 
-    private static GenericDao dao = new GenericDao();
+    private BaseDaoInterface dao = new BaseDao();
+
+    private StockDaoInterface stockDao = new StockDao();
 
     @FXML
     private TableView<Order> orderTable;
@@ -45,28 +33,31 @@ public class InventoryController implements Initializable {
     private TableColumn<Order, String> orderDateCol;
 
     @FXML
-    private TableColumn<Order, Number> vendorIdCol;
+    private TableColumn<Order, Number> totalCostCol;
 
     @FXML
-    private TableView<Item> itemTable;
+    private TableColumn<Order, Number> itemIdCol;
 
     @FXML
-    private TableColumn<Item, Number> itemIdCol;
+    private TableColumn<Order, Number> orderQuantityCol;
 
     @FXML
-    private TableColumn<Item, String> itemNameCol;
+    private TableView<Stock> stockTable;
 
     @FXML
-    private TableColumn<Item, String> categoryCol;
+    private TableColumn<Stock, Number> stockIdCol;
 
     @FXML
-    private TableColumn<Item, Number> quantityCol;
+    private TableColumn<Stock, String> itemNameCol;
 
     @FXML
-    private TableColumn<Item, Number> purchasePriceCol;
+    private TableColumn<Stock, Number> stockQuantityCol;
 
     @FXML
-    private Button itemsBtn;
+    private TableColumn<Stock, String> expirationDateCol;
+
+    @FXML
+    private Button refreshBtn;
 
     @FXML
     private Button addOrderBtn;
@@ -75,69 +66,70 @@ public class InventoryController implements Initializable {
     private Button removeOrderBtn;
 
     @FXML
-    private Button addItemBtn;
-
-    @FXML
-    private Button removeItemBtn;
-
-    @FXML
     private Text messageText;
-
-    @FXML
-    private TextField orderIdInput;
 
     @FXML
     private DatePicker orderDatePicker;
 
     @FXML
+    private DatePicker expirationDatePicker;
+
+    @FXML
     private ComboBox vendorPicker;
-
-    @FXML
-    private TextField itemIdInput;
-
-    @FXML
-    private TextField itemNameInput;
-
-    @FXML
-    private TextField categoryInput;
 
     @FXML
     private TextField qtyInput;
 
     @FXML
-    private TextField purchasePriceInput;
+    private BarChart stockChart;
+
+    @FXML
+    private ListView itemsLowInStockList;
+
+    @FXML
+    private CategoryAxis itemNameAxis;
+
+    @FXML
+    private NumberAxis qtyAxis;
+
+    @FXML
+    private Button subtractFromStockBtn;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
-        try{
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
             // Order table + columns
             orderIdCol.setCellValueFactory(cellData -> cellData.getValue().orderIdProperty());
             orderDateCol.setCellValueFactory(cellData -> cellData.getValue().orderDateProperty());
-            vendorIdCol.setCellValueFactory(cellData -> cellData.getValue().getVendor().vendorIdProperty());
+            itemIdCol.setCellValueFactory(cellData -> cellData.getValue().getItem().itemIdProperty());
+            orderQuantityCol.setCellValueFactory(cellData -> cellData.getValue().quantityProperty());
+            totalCostCol.setCellValueFactory(cellData -> cellData.getValue().totalCostProperty());
             orderTable.getItems().setAll(getOrders());
 
-            // Item table + columns
-            itemIdCol.setCellValueFactory(cellData -> cellData.getValue().itemIdProperty());
+            // Stock table + columns
+            stockIdCol.setCellValueFactory(cellData -> cellData.getValue().stockIdProperty());
             itemNameCol.setCellValueFactory(cellData -> cellData.getValue().itemNameProperty());
-            categoryCol.setCellValueFactory(cellData -> cellData.getValue().categoryProperty());
-            quantityCol.setCellValueFactory(cellData -> cellData.getValue().quantityProperty());
-            purchasePriceCol.setCellValueFactory(cellData -> cellData.getValue().purchasePriceProperty());
-            //itemTable.getItems().setAll(getItemsFromOrder());
+            stockQuantityCol.setCellValueFactory(cellData -> cellData.getValue().quantityProperty());
+            expirationDateCol.setCellValueFactory(cellData -> cellData.getValue().expirationDateProperty());
+            stockTable.getItems().setAll(getItemsInStock());
 
             // Buttons
-            itemsBtn.setOnAction(e -> getItemsFromOrder());
             addOrderBtn.setOnAction(e -> addOrder());
             removeOrderBtn.setOnAction(e -> removeOrder());
-            addItemBtn.setOnAction(e -> addItemToOrder());
-            removeItemBtn.setOnAction(e -> removeItemFromOrder());
-            itemsBtn.setOnAction(e -> getItemsFromOrder());
+            refreshBtn.setOnAction(e -> populateChart());
+            subtractFromStockBtn.setOnAction(e -> removeItemFromStock());
+
+            // Populate list view, items low in stock
+            getItemsLowInStock();
+
+            // Stock chart
+            populateChart();
 
             // ComboBox
-            vendorChoices();
+            itemChoices();
 
-
-            messageText.setText("Inventory overview");
-        } catch(Exception e){
+            messageText.setText("Stock overview");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -145,36 +137,52 @@ public class InventoryController implements Initializable {
     /**
      * Add order to database
      **/
-    public void addOrder(){
-        Order addOrder = new Order();
-        addOrder.setOrderDate(String.valueOf(orderDatePicker.getValue()));
-        int id = parseInt(vendorPicker.getSelectionModel().getSelectedItem().toString());
-        Vendor vendor = new Vendor(id);
-        addOrder.setVendor(vendor);
-
+    public void addOrder() {
+        String orderDate = String.valueOf(orderDatePicker.getValue());
+        int qty = Integer.parseInt(qtyInput.getText());
+        int itemId = Integer.parseInt(String.valueOf(vendorPicker.getValue()));
+        String expirationDate = String.valueOf(expirationDatePicker.getValue());
         try {
-            dao.createEntity(addOrder);
+            Item item = (Item) dao.getEntityById(Item.class, itemId);
+
+            int cost = item.getPurchasePrice();
+            int total = cost * qty;
+
+            Order order = new Order();
+            order.setOrderDate(orderDate);
+            order.setQuantity(qty);
+            order.setTotalCost(total);
+            order.setItem(item);
+
+            dao.createEntity(order);
+
+            addItemToStock(qty, expirationDate, order);
             refreshOrderTable();
             messageText.setText("Order added!");
-        } catch(Exception e){
+        } catch (Exception e) {
             messageText.setText("Error!");
+
             e.printStackTrace();
         }
     }
 
     /**
      * Remove order from database
+     * ERROR: CANNOT DELETE OR UPDATE A PARENT ROW: FK CONSTRAINT
      **/
-    public void removeOrder(){
-        Order removeOrder = new Order();
-        removeOrder = orderTable.getSelectionModel().getSelectedItem();
+    public void removeOrder() {
+        Order removeOrder = orderTable.getSelectionModel().getSelectedItem();
         try {
             dao.deleteEntity(removeOrder);
             refreshOrderTable();
             messageText.setText("Order removed!");
-        } catch(Exception e){
-            messageText.setText("Error!");
-            e.printStackTrace();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText("Exception: " + e);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.showAndWait();
         }
     }
 
@@ -182,106 +190,117 @@ public class InventoryController implements Initializable {
     /**
      * Retrieve list of orders from database
      **/
-    public ObservableList<Order> getOrders(){
-        ObservableList<Order> orderList = FXCollections.observableArrayList();
+    public List<Order> getOrders() {
+        List<Order> orderList = FXCollections.observableArrayList();
         orderList.addAll(dao.getEntities(Order.class));
         return orderList;
     }
 
     /**
-     * Retrieve list of items pertaining to a particular order
+     * Retrieve list of items in stock from database
      **/
-    public void getItemsFromOrder() {
-        try {
-            ObservableList<Item> itemList = FXCollections.observableArrayList();
-
-            if (orderTable.getSelectionModel().getSelectedItem() == null) {
-                messageText.setText("Please select an order in the order table first");
-            } else {
-                int value = getOrderId();
-                String hsql = "FROM Item order WHERE order.order = " + value + "";
-                itemList.addAll(dao.query(hsql));
-
-                itemTable.getItems().clear();
-                itemTable.getItems().addAll(itemList);
-                messageText.setText("Displaying items in order " + value);
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public int getOrderId(){
-        Order selectedOrder = orderTable.getSelectionModel().getSelectedItem();
-        int id = selectedOrder.getOrderId();
-        return id;
+    public List<Stock> getItemsInStock() {
+        List<Stock> stockList = FXCollections.observableArrayList();
+        stockList.addAll(stockDao.getItemsInStock());
+        return stockList;
     }
 
     /**
-     * Add item to a selected order in the database
-     **/
-    public void addItemToOrder(){
-        try {
-            Item addItem = new Item();
-            addItem.setItemName(itemNameInput.getText());
-            addItem.setCategory(categoryInput.getText());
-            addItem.setQuantity(parseInt(qtyInput.getText()));
-            addItem.setPurchasePrice(parseInt(purchasePriceInput.getText()));
-            int id = getOrderId();
-            Order toOrder = new Order(id);
-            addItem.setOrder(toOrder);
-            dao.createEntity(addItem);
+     * Retrieve list of items low in stock from database
+     */
+    public void getItemsLowInStock() {
+        List<Stock> itemsLowInStock = new ArrayList();
+        List stockStatus = FXCollections.observableArrayList();
+        itemsLowInStock.addAll(stockDao.getItemsShortInStock());
+        for (Stock s : itemsLowInStock) {
+            String items = s.getItemName() + " (" + s.getQuantity() + ")";
+            stockStatus.add(items);
+        }
+        itemsLowInStockList.setItems((ObservableList) stockStatus);
+    }
 
-            messageText.setText("Item added to order!");
-        } catch(Exception e){
+    /**
+     * Add item to current stock
+     **/
+    public void addItemToStock(int qty, String expirationDate, Order order) {
+        try {
+            Stock stock = new Stock();
+            stock.setQuantity(qty);
+            stock.setOrder(order);
+            stock.setExpirationDate(expirationDate);
+            dao.createEntity(stock);
+            refreshStockTable();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText("Exception: " + e);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Remove item from stock
+     */
+    public void removeItemFromStock() {
+        Stock stock = stockTable.getSelectionModel().getSelectedItem();
+        int id = stock.getStockId();
+        try {
+            stockDao.removeItemFromStock(id);
+            refreshStockTable();
+            messageText.setText("Item removed from stock!");
+        } catch (Exception e) {
             messageText.setText("Error!");
             e.printStackTrace();
         }
     }
 
     /**
-     * Remove item from a selected order in the database
-     **/
-    public void removeItemFromOrder(){
-        Item removeItem = new Item();
-        removeItem = itemTable.getSelectionModel().getSelectedItem();
-        try {
-            dao.deleteEntity(removeItem);
-            messageText.setText("Item removed!");
-        } catch(Exception e){
-            messageText.setText("Error!");
-            e.printStackTrace();
-        }
+     * Retrieve series, populate bar chart
+     */
+    public void populateChart() {
+        stockChart.getData().clear();
+        stockChart.getData().addAll(stockDao.getItemsInStockChart());
     }
 
     /**
-     * Retrieve list of vendors from database
-     * NEED TO DO: select vendor_id as MenuItem
+     * Retrieve list of items from database
      **/
-    public void vendorChoices(){
-        List<Vendor> vendors = new ArrayList();
-        vendors.addAll(dao.getEntities(Vendor.class));
-        for(Vendor v : vendors){
-            String vendor = "" + v.getVendorId();
-            vendorPicker.getItems().add(vendor);
+    public void itemChoices() {
+        List<Item> items = new ArrayList();
+        items.addAll(dao.getEntities(Item.class));
+        for (Item i : items) {
+            String item = "" + i.getItemId();
+            vendorPicker.getItems().add(item);
         }
     }
 
-    public void refreshOrderTable(){
+    public void refreshOrderTable() {
         orderTable.getItems().clear();
         orderTable.getItems().setAll(getOrders());
     }
 
+    public void refreshStockTable() {
+        stockTable.getItems().clear();
+        stockTable.getItems().setAll(getItemsInStock());
+    }
 
-    public void loadVendorView(ActionEvent event){
-      ViewLoader viewLoader = new ViewLoader();
-      viewLoader.loadVendorView(event);
+
+    public void loadVendorView(ActionEvent event) {
+        StageController stageController = new StageController();
+        stageController.loadVendorView(event);
 
     }
 
-    public void loadReportView(ActionEvent event){
-        ViewLoader viewLoader = new ViewLoader();
-        viewLoader.loadReportView(event);
+    public void loadReportView(ActionEvent event) {
+        StageController stageController = new StageController();
+        stageController.loadReportView(event);
+    }
+
+    public void loadCloseView(ActionEvent event) {
+        StageController stageController = new StageController();
+        stageController.loadCloseView(event);
     }
 
 }

@@ -3,115 +3,99 @@ package main.java.entities;
 import javafx.beans.property.*;
 
 import javax.persistence.*;
-
-/**
- * Created by joakimlindvall on 2017-10-28.
- */
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "items")
 public class Item {
 
-    public Item(){
+    public Item() {
 
+    }
+
+    public Item(int id) {
+        this.setItemId(id);
+    }
+
+    public Item(String name) {
+        this.setItemName(name);
     }
 
     private final IntegerProperty itemId = new SimpleIntegerProperty();
 
-    public IntegerProperty itemIdProperty(){
+    public IntegerProperty itemIdProperty() {
         return itemId;
     }
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id", updatable = false, nullable = false)
-    public int getItemId(){
+    public int getItemId() {
         return itemId.get();
     }
 
-    public void setItemId(int value){
+    public void setItemId(int value) {
         itemId.set(value);
     }
 
     private final StringProperty itemName = new SimpleStringProperty();
 
-    public StringProperty itemNameProperty(){
+    public StringProperty itemNameProperty() {
         return itemName;
     }
 
     @Basic
     @Column(name = "item_name")
-    public String getItemName(){
+    public String getItemName() {
         return itemName.get();
     }
 
-    public void setItemName(String value){
+    public void setItemName(String value) {
         itemName.set(value);
-    }
-
-    private final StringProperty category = new SimpleStringProperty();
-
-    public StringProperty categoryProperty(){
-        return category;
-    }
-
-    @Basic
-    @Column(name = "category")
-    public String getCategory(){
-        return category.get();
-    }
-
-    public void setCategory(String value){
-        category.set(value);
-    }
-
-    private final IntegerProperty quantity = new SimpleIntegerProperty();
-
-    public IntegerProperty quantityProperty(){
-        return quantity;
-    }
-
-    @Basic
-    @Column(name = "qty")
-    public int getQuantity(){
-        return quantity.get();
-    }
-
-    public void setQuantity(int value){
-        quantity.set(value);
     }
 
     private final IntegerProperty purchasePrice = new SimpleIntegerProperty();
 
-    public IntegerProperty purchasePriceProperty(){
+    public IntegerProperty purchasePriceProperty() {
         return purchasePrice;
     }
 
     @Basic
-    @Column(name = "purchase_price")
-    public int getPurchasePrice(){
+    @Column(name = "cost")
+    public int getPurchasePrice() {
         return purchasePrice.get();
     }
 
-    public void setPurchasePrice(int value){
+    public void setPurchasePrice(int value) {
         purchasePrice.set(value);
     }
 
-    private final ObjectProperty<Order> order = new SimpleObjectProperty<>();
+    private final ObjectProperty<Catalog> catalog = new SimpleObjectProperty<>();
 
-    public ObjectProperty<Order> orderProperty(){
-        return order;
+    public ObjectProperty<Catalog> catalogProperty() {
+        return catalog;
     }
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    public Order getOrder(){
-        return order.get();
+    @JoinColumn(name = "catalog_id", nullable = false)
+    public Catalog getCatalog() {
+        return catalog.get();
     }
 
-    public void setOrder(Order order){
-        this.order.set(order);
+    public void setCatalog(Catalog catalog) {
+        this.catalog.set(catalog);
     }
 
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, mappedBy = "item")
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders.addAll(orders);
+    }
 
 }
