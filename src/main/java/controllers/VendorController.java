@@ -1,14 +1,12 @@
 package main.java.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import main.java.dao.*;
 import main.java.entities.Catalog;
@@ -18,6 +16,7 @@ import main.java.entities.Vendor;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.lang.Integer.parseInt;
@@ -151,6 +150,7 @@ public class VendorController implements Initializable {
             messageText.setText("Vendor overview");
         } catch (Exception e) {
             e.printStackTrace();
+            loadAlert(e.toString());
         }
 
     }
@@ -170,8 +170,8 @@ public class VendorController implements Initializable {
             refreshVendorTable();
             messageText.setText("Vendor added!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -186,8 +186,8 @@ public class VendorController implements Initializable {
             refreshVendorTable();
             messageText.setText("Vendor removed!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -229,6 +229,7 @@ public class VendorController implements Initializable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -251,8 +252,8 @@ public class VendorController implements Initializable {
             catalogTable.refresh();
             messageText.setText("Catalog added to vendor!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -266,8 +267,8 @@ public class VendorController implements Initializable {
             dao.deleteEntity(removeCatalog);
             messageText.setText("Catalog removed!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -289,6 +290,7 @@ public class VendorController implements Initializable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -315,8 +317,8 @@ public class VendorController implements Initializable {
             itemTable.refresh();
             messageText.setText("Item added to order!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -330,8 +332,8 @@ public class VendorController implements Initializable {
             dao.deleteEntity(removeItem);
             messageText.setText("Item removed from catalog!");
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -345,9 +347,36 @@ public class VendorController implements Initializable {
         stageController.loadReportView(event);
     }
 
-    public void loadCloseView(ActionEvent event) {
-        StageController stageController = new StageController();
-        stageController.loadCloseView(event);
+    public void loadAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMessage);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add("main/resources/css/master.css");
+        alert.showAndWait();
+    }
+
+    public void loadExit() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Exit application");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you wish to exit the application?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add("main/resources/css/master.css");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == yesButton) {
+            Platform.exit();
+        } else if (result.get() == noButton) {
+            alert.close();
+        }
     }
 
 

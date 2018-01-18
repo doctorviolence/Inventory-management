@@ -1,5 +1,6 @@
 package main.java.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,13 +9,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.stage.StageStyle;
 import main.java.dao.*;
 import main.java.entities.*;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class InventoryController implements Initializable {
@@ -131,6 +131,7 @@ public class InventoryController implements Initializable {
             messageText.setText("Stock overview");
         } catch (Exception e) {
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -160,9 +161,8 @@ public class InventoryController implements Initializable {
             refreshOrderTable();
             messageText.setText("Order added!");
         } catch (Exception e) {
-            messageText.setText("Error!");
-
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -177,12 +177,8 @@ public class InventoryController implements Initializable {
             refreshOrderTable();
             messageText.setText("Order removed!");
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error!");
-            alert.setHeaderText(null);
-            alert.setContentText("Exception: " + e);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.showAndWait();
+            e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -231,12 +227,8 @@ public class InventoryController implements Initializable {
             dao.createEntity(stock);
             refreshStockTable();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error!");
-            alert.setHeaderText(null);
-            alert.setContentText("Exception: " + e);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.showAndWait();
+            e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -244,15 +236,19 @@ public class InventoryController implements Initializable {
      * Remove item from stock
      */
     public void removeItemFromStock() {
-        Stock stock = stockTable.getSelectionModel().getSelectedItem();
-        int id = stock.getStockId();
         try {
-            stockDao.removeItemFromStock(id);
-            refreshStockTable();
-            messageText.setText("Item removed from stock!");
+            Stock stock = stockTable.getSelectionModel().getSelectedItem();
+            int id = stock.getStockId();
+            if (stock == null) {
+                messageText.setText("Please select an item first.");
+            } else {
+                stockDao.removeItemFromStock(id);
+                refreshStockTable();
+                messageText.setText("Item removed from stock!");
+            }
         } catch (Exception e) {
-            messageText.setText("Error!");
             e.printStackTrace();
+            loadAlert(e.toString());
         }
     }
 
@@ -298,9 +294,36 @@ public class InventoryController implements Initializable {
         stageController.loadReportView(event);
     }
 
-    public void loadCloseView(ActionEvent event) {
-        StageController stageController = new StageController();
-        stageController.loadCloseView(event);
+    public void loadAlert(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMessage);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add("main/resources/css/master.css");
+        alert.showAndWait();
+    }
+
+    public void loadExit() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Exit application");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you wish to exit the application?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add("main/resources/css/master.css");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == yesButton) {
+            Platform.exit();
+        } else if (result.get() == noButton) {
+            alert.close();
+        }
     }
 
 }

@@ -47,7 +47,7 @@
                         prefWidth="150.0" styleClass="button-menu" text="Report"/>
                 <Button fx:id="exitBtn" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity"
                         maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
-                        onAction="#loadCloseView" prefHeight="30.0" prefWidth="150.0" styleClass="button-menu"
+                        onAction="#loadExit" prefHeight="30.0" prefWidth="150.0" styleClass="button-menu"
                         text=" Exit Application" textAlignment="CENTER"/>
             </children>
         </VBox>

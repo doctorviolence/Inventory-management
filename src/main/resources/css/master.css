@@ -1,7 +1,7 @@
 .root {
     -fx-background-color: #FFFFFF;
     -fx-font-size: 9pt;
-    -fx-text-fill: white;
+    -fx-text-fill: #323334;
     -fx-font-weight: bold;
     -fx-border-color: black;
     -fx-border-style: solid;

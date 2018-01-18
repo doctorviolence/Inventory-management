@@ -75,7 +75,6 @@ public class StageController {
             scene = new Scene(root);
             stage = new Stage();
 
-            //stage.initOwner();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(scene);
