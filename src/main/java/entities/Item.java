@@ -3,12 +3,13 @@ package main.java.entities;
 import javafx.beans.property.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "items")
-public class Item {
+public class Item implements Serializable {
 
     public Item() {
 
@@ -89,13 +90,18 @@ public class Item {
 
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, mappedBy = "item")
+    @OneToMany(targetEntity = Order.class, cascade = CascadeType.ALL, mappedBy = "item", fetch=FetchType.LAZY)
     public List<Order> getOrders() {
         return orders;
     }
 
     public void setOrders(List<Order> orders) {
         this.orders.addAll(orders);
+    }
+
+    @Override
+    public String toString() {
+        return "Item ID: " + itemId + " Item Name: " + itemName + " Cost: " + purchasePrice;
     }
 
 }

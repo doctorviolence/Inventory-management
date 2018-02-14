@@ -6,12 +6,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "catalogs")
-public class Catalog {
+public class Catalog implements Serializable {
 
     public Catalog() {
 
@@ -56,13 +57,18 @@ public class Catalog {
 
     private List<Item> items = new ArrayList<>();
 
-    @OneToMany(targetEntity = Item.class, cascade = CascadeType.ALL, mappedBy = "catalog")
+    @OneToMany(targetEntity = Item.class, cascade = CascadeType.ALL, mappedBy = "catalog", fetch=FetchType.LAZY)
     public List<Item> getItems() {
         return items;
     }
 
     public void setItems(List<Item> items) {
         this.items.addAll(items);
+    }
+
+    @Override
+    public String toString() {
+        return "Catalog ID: " + catalogId;
     }
 
 }

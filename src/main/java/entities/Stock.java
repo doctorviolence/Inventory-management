@@ -3,10 +3,11 @@ package main.java.entities;
 import javafx.beans.property.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "stock_levels")
-public class Stock {
+public class Stock implements Serializable {
 
     public Stock() {
 
@@ -103,6 +104,11 @@ public class Stock {
 
     public void setOrder(Order order) {
         this.order.set(order);
+    }
+
+    @Override
+    public String toString() {
+        return "Stock ID: " + stockId + " Qty: " + quantity + " Item Name: " + itemName + " Expiration date: " + expirationDate;
     }
 
 }

@@ -3,10 +3,11 @@ package main.java.entities;
 import javafx.beans.property.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order implements Serializable {
 
     public Order() {
 
@@ -103,7 +104,7 @@ public class Order {
         return stock;
     }
 
-    @OneToOne(targetEntity = Stock.class, cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToOne(targetEntity = Stock.class, cascade = CascadeType.ALL, mappedBy = "order", fetch=FetchType.LAZY)
     public Stock getStock() {
         return stock.get();
     }
@@ -112,5 +113,9 @@ public class Order {
         this.stock.set(stock);
     }
 
+    @Override
+    public String toString() {
+        return "Order ID: " + orderId + " Order Date: " + orderDate + " Total Cost: " + totalCost + " Qty: " + quantity;
+    }
 
 }
